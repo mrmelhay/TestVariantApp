@@ -67,18 +67,18 @@ def write_variant_docx(filename, booklet_id, program_name, questions):
 
     # Body top
     # Title (bold)
-    p_top = doc.add_paragraph(f"Savollar kitobchasi: {booklet_id}")
-    try:
-        p_top.runs[0].bold = True
-    except Exception:
-        pass
-    p_top.paragraph_format.space_after = Pt(4)
+    # p_top = doc.add_paragraph(f"Savollar kitobchasi: {booklet_id}")
+    # try:
+    #     p_top.runs[0].bold = True
+    # except Exception:
+    #     pass
+    # p_top.paragraph_format.space_after = Pt(4)
 
     body_lines = [
         f"Ta`lim yo`nalishi:\t{program_name}",
         "Maxsus shifr: _____________\t\t\t Guruhi:_____________\t",
-        "_______________________________________ \t\t\t ______________",
-        "   (familiyasi, ismi, otasining ismi)\t\t\t   (imzo)",
+        "___________________________________________________________________ \t\t\t ______________",
+        "   (familiyasi, ismi, otasining ismi)\t\t\t\t\t\t   (imzo)",
         "",
         "Test topshiriqlarini yechishdan avval savollar kitobchasini tekshiring!",
         "",
@@ -112,11 +112,19 @@ def write_variant_docx(filename, booklet_id, program_name, questions):
 def write_key_docx(filename, variant_number, answers, booklet_id):
     """Create a DOCX answer key which distributes answers across 4 columns evenly on single page."""
     doc = Document()
+
+    # Header
+    header = doc.sections[0].header
+    if not header.paragraphs:
+        header.add_paragraph()
+    header_p = header.paragraphs[0]
+    header_p.text = f"Variant {variant_number:03d} --//-- Savollar kitobchasi: {booklet_id}"
+    add_page_field_to_paragraph(header_p)
+
+
     sec = doc.sections[0]
     sec.left_margin = Inches(0.4)
     sec.right_margin = Inches(0.4)
-
-    doc.add_paragraph(f"Variant {variant_number:03d} Javoblar, savollar kitobchasi: {booklet_id}")
 
     total = len(answers)
     if total == 0:
